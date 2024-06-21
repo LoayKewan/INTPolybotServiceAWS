@@ -9,6 +9,7 @@ class Bot:
         self.telegram_bot_client = telebot.TeleBot(token)
         self.telegram_bot_client.remove_webhook()
         time.sleep(0.5)
+
         retries = 4 
         for _ in range(retries):
             try:
