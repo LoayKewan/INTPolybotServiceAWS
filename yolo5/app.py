@@ -150,7 +150,7 @@ def consume():
 
                 response = dynamodb.put_item(
                 TableName=table_name,Item={
-                'chat_id' : { 'S': chat_id},
+                'chat_id' : { 'N': str(chat_id)},
                 'prediction_id': {'S': prediction_id},
                 'original_img_path': {'S': original_img_path},
                 'predicted_img_path': {'S': predicted_img_path},
