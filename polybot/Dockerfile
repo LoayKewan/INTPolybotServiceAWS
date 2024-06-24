@@ -10,6 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+ENV BUCKET_NAME=loay-kewan-test-123
 ENV TELEGRAM_APP_URL=https://loaybot.int-devops.click
 
 CMD ["python3", "app.py"]

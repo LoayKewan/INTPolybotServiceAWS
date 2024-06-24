@@ -7,4 +7,7 @@ RUN curl -L https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5s
 
 COPY . .
 
+ENV BUCKET_NAME=loay-kewan-test-123
+ENV SQS_QUEUE_NAME=loay-queue-am-project
+
 CMD ["python3", "app.py"]

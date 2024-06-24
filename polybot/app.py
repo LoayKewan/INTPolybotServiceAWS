@@ -5,7 +5,7 @@ from bot import ObjectDetectionBot
 import json
 import boto3
 from botocore.exceptions import ClientError
-
+from loguru import logger
 
 def get_secret():
     secret_name = "loaytokensecret-for-amz-prolect"
@@ -55,23 +55,35 @@ def webhook():
     return 'Ok'
 
 
-@app.route(f'/results', methods=['POST'])
+@app.route('/results', methods=['POST'])
 def results():
     prediction_id = request.args.get('predictionId')
 
-    # TODO use the prediction_id to retrieve results from DynamoDB and send to the end-user
 
-    chat_id = ...
-    text_results = ...
 
-    bot.send_text(chat_id, text_results)
-    return 'Ok'
+    logger.info(f"your predction id --------------------{prediction_id}")
+    dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
+    table = dynamodb.Table('prediction_summary')
+
+    try:
+        response = table.get_item(Key={'prediction_id': prediction_id})
+        
+        if 'Item' in response:
+            results = response['Item']
+            logger.info(f"Results retrieved successfully: {results}")
+            return results
+        else:
+            logger.info("No results found for the given prediction_id")
+    except Exception as e:
+        logger.error(f"Error retrieving results from DynamoDB: {str(e)}")
+
+    return "Error: The provided key element does not match the schema"
 
 
 @app.route(f'/loadTest/', methods=['POST'])
 def load_test():
     req = request.get_json()
-    #bot.handle_message(req['message'])
+    bot.handle_message(req['message'])
     return 'Ok'
 
 
