@@ -53,20 +53,22 @@ jobs:
           host: ${{ env.EC2_PUBLIC_IP0 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          scripts : |
-
+          scripts: |
+            
             # Stop the existing container
             CONTAINER_NAME="my_polybot"
-            RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
-            if [ ! -z "$RUNNING_CONTAINER" ]; then
-              docker stop $CONTAINER_NAME
-            fi
-
+            #RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
+            #if [ ! -z "$RUNNING _CONTAINER" ]; then
+            docker stop my_polybot
+            #fi
+            
             # Prune unnecessary Docker data
             docker system prune --force
-
+            
             # Run the new container
-            docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+            #docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+            
+            docker run --name my_polybot -p 8443:8443 --restart always loaykewan/image_polybot_am_project
         
           
 
@@ -80,13 +82,15 @@ jobs:
 
             # Stop the existing container
             CONTAINER_NAME="my_polybot"
-            RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
-            if [ ! -z "$RUNNING_CONTAINER" ]; then
-              docker stop $CONTAINER_NAME
-            fi
+            #RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
+            #if [ ! -z "$RUNNING _CONTAINER" ]; then
+            docker stop my_polybot
+            #fi
 
             # Prune unnecessary Docker data
             docker system prune --force
 
             # Run the new container
-            docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+            #docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+            
+            docker run --name my_polybot -p 8443:8443 --restart always loaykewan/image_polybot_am_project
