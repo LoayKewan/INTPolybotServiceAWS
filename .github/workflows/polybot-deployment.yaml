@@ -53,7 +53,7 @@ jobs:
           host: ${{ env.EC2_PUBLIC_IP0 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          run: |
+          scripts : |
 
             # Stop the existing container
             CONTAINER_NAME="my_polybot"
@@ -76,7 +76,7 @@ jobs:
           host: ${{ env.EC2_PUBLIC_IP2 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          run: |
+          scripts : |
 
             # Stop the existing container
             CONTAINER_NAME="my_polybot"
