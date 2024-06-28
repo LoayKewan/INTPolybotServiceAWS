@@ -1,4 +1,4 @@
-name: Enhanced Polybot Microservice Deployment
+name:  Polybot Microservice Deployment
 
 on:
   push:
