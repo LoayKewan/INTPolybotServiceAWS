@@ -59,7 +59,7 @@ jobs:
             CONTAINER_NAME="my_polybot"
             #RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
             #if [ ! -z "$RUNNING _CONTAINER" ]; then
-            docker stop my_polybot
+            sudo docker stop my_polybot
             echo "hi" > tt.txt
             
             
@@ -87,7 +87,7 @@ jobs:
             CONTAINER_NAME="my_polybot"
             #RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
             #if [ ! -z "$RUNNING _CONTAINER" ]; then
-            docker stop my_polybot
+            sudo docker stop my_polybot
             echo "hi" > tt.txt
             
             #fi
