@@ -2,6 +2,8 @@ name: Polybot Microservice Deployment
 
 on:
   push:
+    paths:
+      - 'polybot'/**'
     branches:
       - main
 
