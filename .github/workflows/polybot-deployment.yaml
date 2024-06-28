@@ -1,4 +1,4 @@
-name: Polybot Microservice Deployment
+name: Enhanced Polybot Microservice Deployment
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP0: 3.249.126.140  #  replace to your EC2 instance public IP
-  EC2_PUBLIC_IP2: 3.252.200.173   #  replace to your EC2 instance public IP
+  EC2_PUBLIC_IP0: 3.249.126.140
+  EC2_PUBLIC_IP2: 3.252.200.173
 
 jobs:
   Build:
@@ -21,24 +21,14 @@ jobs:
       - name: Build and push image
         run: |
           cd polybot
-          
-          # Login to ECR (commend in in case you use ECR, change region code and ECR URI):
-          # export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          # export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 352708296901.dkr.ecr.eu-central-1.amazonaws.com
-
-          # Login to DockerHub (comment out if you don't use DockerHub):         
           docker login -u ${{ secrets.DOCKER_REPO_USERNAME }} -p ${{ secrets.DOCKER_REPO_PASSWORD }}
-
           POLY_BOT_IMAGE_NAME=image_polybot_am_project:${{ github.run_number }}
           docker build -t $POLY_BOT_IMAGE_NAME .
           docker tag $POLY_BOT_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
-
           docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
-  
 
   Deploy:
-    name: Deploy the new polybot
+    name: Enhanced Deployment
     runs-on: ubuntu-latest
     needs:
       - Build
@@ -47,55 +37,28 @@ jobs:
       - name: Checkout the repo code
         uses: actions/checkout@v2
 
-      - name: Deploy new version
+      - name: Deploy new version to EC2_0
         uses: appleboy/ssh-action@master
         with:
-          host: 3.252.200.173
+          host: ${{ env.EC2_PUBLIC_IP0 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           scripts: |
-            
-            # Stop the existing container
             CONTAINER_NAME="my_polybot"
-            #RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
-            #if [ ! -z "$RUNNING _CONTAINER" ]; then
-            sudo docker stop my_polybot
-            echo "hi" > tt.txt
-            
-            
-            #fi
-            
-            # Prune unnecessary Docker data
-            #docker system prune --force
-            
-            # Run the new container
-            #docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
-            
-            #docker run --name my_polybot -p 8443:8443 --restart always loaykewan/image_polybot_am_project
-        
-          
+            docker stop $CONTAINER_NAME || true
+            docker rm $CONTAINER_NAME || true
+            docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+            docker run -d --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
 
-      - name: Deploy new version on second station
+      - name: Deploy new version to EC2_2
         uses: appleboy/ssh-action@master
         with:
-          host: 3.249.126.140
+          host: ${{ env.EC2_PUBLIC_IP2 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          scripts : |
-
-            # Stop the existing container
+          scripts: |
             CONTAINER_NAME="my_polybot"
-            #RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
-            #if [ ! -z "$RUNNING _CONTAINER" ]; then
-            sudo docker stop my_polybot
-            echo "hi" > tt.txt
-            
-            #fi
-            
-            # Prune unnecessary Docker data
-            #docker system prune --force
-            
-            # Run the new container
-            #docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
-            
-            #docker run --name my_polybot -p 8443:8443 --restart always loaykewan/image_polybot_am_project
+            docker stop $CONTAINER_NAME || true
+            docker rm $CONTAINER_NAME || true
+            docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+            docker run -d --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
