@@ -35,12 +35,18 @@ jobs:
           docker tag $POLY_BOT_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
 
           docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+  
+
   Deploy:
+    name: Deploy the new polybot
     runs-on: ubuntu-latest
     needs:
       - Build
 
     steps:
+      - name: Checkout the repo code
+        uses: actions/checkout@v2
+
       - name: Deploy new version
         uses: appleboy/ssh-action@master
         with:
