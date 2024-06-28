@@ -67,7 +67,7 @@ jobs:
       - name: Deploy new version on second station
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.EC2_PUBLIC_IP0 }}
+          host: ${{ env.EC2_PUBLIC_IP2 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           run: |
