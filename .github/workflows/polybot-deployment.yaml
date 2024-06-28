@@ -8,8 +8,8 @@ on:
       - main
 
 env:
-    EC2_PUBLIC_IP0: 3.250.72.239  #  replace to your EC2 instance public IP
-    EC2_PUBLIC_IP2: 34.244.122.191   #  replace to your EC2 instance public IP
+    EC2_PUBLIC_IP0: 3.249.126.140  #  replace to your EC2 instance public IP
+    EC2_PUBLIC_IP2: 3.252.200.173   #  replace to your EC2 instance public IP
 
 jobs:
   Build:
