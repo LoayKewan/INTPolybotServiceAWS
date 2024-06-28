@@ -50,7 +50,7 @@ jobs:
       - name: Deploy new version
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.EC2_PUBLIC_IP0 }}
+          host: 3.252.200.173
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           scripts: |
@@ -62,7 +62,7 @@ jobs:
             docker stop my_polybot
             echo "hi" > tt.txt
             
-            """ > .env
+            
             #fi
             
             # Prune unnecessary Docker data
@@ -78,7 +78,7 @@ jobs:
       - name: Deploy new version on second station
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.EC2_PUBLIC_IP2 }}
+          host: 3.249.126.140
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           scripts : |
@@ -90,7 +90,6 @@ jobs:
             docker stop my_polybot
             echo "hi" > tt.txt
             
-            """ > .env
             #fi
             
             # Prune unnecessary Docker data
