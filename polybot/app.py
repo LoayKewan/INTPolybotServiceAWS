@@ -71,8 +71,10 @@ def results():
             results = response['Item']
             logger.info(f"Results retrieved successfully: {results}")
 
+
             my_chat_id = str(results['chat_id'])
             logger.info(f"your chat id: {my_chat_id}")
+            logger.info("my_chat_id retrieved successfully *********************")
 
             if not results.get('labels'):
                 message = "No prediction: empty labels"
