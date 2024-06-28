@@ -41,36 +41,50 @@ jobs:
       - Build
 
     steps:
-      - name: Checkout the repo code
-        uses: actions/checkout@v2
       - name: Deploy new version
         uses: actions/checkout@v2
         with:
           host: ${{ env.EC2_PUBLIC_IP0 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          run : |         
-            # TODO your implementation here.... 
-            
-            sudo apt update && sudo apt install jq -y
-            docker stop my_polybot
+          run: |
+            sudo apt update
+            sudo apt install jq -y
+
+            # Stop the existing container
+            CONTAINER_NAME="my_polybot"
+            RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
+            if [ ! -z "$RUNNING_CONTAINER" ]; then
+              docker stop $CONTAINER_NAME
+            fi
+
+            # Prune unnecessary Docker data
             docker system prune --force
-            docker run --name my_polybot -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
-          
+
+            # Run the new container
+            docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+        
           
 
-      - name: Checkout the repo code
-        uses: actions/checkout@v2
-      - name: Deploy new version
+      - name: Deploy new version on second station
         uses: actions/checkout@v2
         with:
-          host: ${{ env.EC2_PUBLIC_IP2 }}
+          host: ${{ env.EC2_PUBLIC_IP0 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           run: |
-            # TODO your implementation here.... 
+            sudo apt update
+            sudo apt install jq -y
 
-            sudo apt update && sudo apt install jq -y
-            docker stop my_polybot
+            # Stop the existing container
+            CONTAINER_NAME="my_polybot"
+            RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
+            if [ ! -z "$RUNNING_CONTAINER" ]; then
+              docker stop $CONTAINER_NAME
+            fi
+
+            # Prune unnecessary Docker data
             docker system prune --force
-            docker run --name my_polybot -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+
+            # Run the new container
+            docker run --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
