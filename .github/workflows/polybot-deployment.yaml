@@ -39,7 +39,7 @@ jobs:
     name: Deploy the new polybot
     runs-on: ubuntu-latest
     needs:
-      - Build
+      - PolybotBuild
 
     steps:
       - name: Checkout the repo code
