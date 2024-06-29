@@ -8,8 +8,8 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP0: 3.249.126.140
-  EC2_PUBLIC_IP2: 3.252.200.173
+  EC2_PUBLIC_IP0: 3.252.98.193
+  EC2_PUBLIC_IP2: 54.77.169.40
 
 jobs:
   Build:
