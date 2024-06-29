@@ -18,7 +18,9 @@ jobs:
     steps:
       - name: Check if Secret is Configured
         run: |
-          echo "Secret Value: ${{ secrets.EC2_SSH_PRIVATE_KEY }}"
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+
+          chmod 600 private_key.pem
     
 
   Build:
