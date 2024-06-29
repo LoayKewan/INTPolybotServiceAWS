@@ -38,11 +38,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Deploy new version to EC2_0
-        uses: appleboy/ssh-action@master
+        uses: webfactory/ssh-agent@v0.5.3
         with:
           host: ${{ env.EC2_PUBLIC_IP0 }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY}}
           scripts: |
             CONTAINER_NAME="my_polybot"
             docker stop $CONTAINER_NAME || true
@@ -51,11 +51,11 @@ jobs:
             docker run -d --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
 
       - name: Deploy new version to EC2_2
-        uses: appleboy/ssh-action@master
+        uses: webfactory/ssh-agent@v0.5.3
         with:
           host: ${{ env.EC2_PUBLIC_IP2 }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY}}
           scripts: |
             CONTAINER_NAME="my_polybot"
             docker stop $CONTAINER_NAME || true
