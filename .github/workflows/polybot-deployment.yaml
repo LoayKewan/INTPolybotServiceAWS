@@ -42,7 +42,7 @@ jobs:
         with:
           host: ${{ env.EC2_PUBLIC_IP0 }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY}}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           scripts: |
             CONTAINER_NAME="my_polybot"
             docker stop $CONTAINER_NAME || true
@@ -55,7 +55,7 @@ jobs:
         with:
           host: ${{ env.EC2_PUBLIC_IP2 }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY}}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           scripts: |
             CONTAINER_NAME="my_polybot"
             docker stop $CONTAINER_NAME || true
