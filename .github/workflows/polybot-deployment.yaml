@@ -12,6 +12,15 @@ env:
   EC2_PUBLIC_IP2: 54.77.169.40
 
 jobs:
+
+  check_secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if Secret is Configured
+        run: |
+          echo "Secret Value: ${{ secrets.YOUR_SECRET_NAME }}"
+    
+
   Build:
     runs-on: ubuntu-latest
     steps:
