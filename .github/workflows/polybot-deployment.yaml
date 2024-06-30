@@ -24,7 +24,7 @@ jobs:
       - name: Build and push image
         run: |
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
+          chmod 400 private_key.pem
           cd polybot
           docker login -u ${{ secrets.DOCKER_REPO_USERNAME }} -p ${{ secrets.DOCKER_REPO_PASSWORD }}
           POLY_BOT_IMAGE_NAME=image_polybot_am_project:${{ github.run_number }}
@@ -55,7 +55,7 @@ jobs:
 
         run : |
           CONTAINER_NAME="my_polybot"
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@ec2-34-245-15-19.eu-west-1.compute.amazonaws.com "sudo docker stop my_polybot || true"
+          ssh -o StrictHostKeyChecking=no -i "${{ secrets.EC2_SSH_PRIVATE_KEY }}" ubuntu@34-245-15-19 "sudo docker stop my_polybot || true"
 #        docker rm $CONTAINER_NAME || true
 #          docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
 #          docker run -d --name $CONTAINER_NAME -p 8443:8443 --restart always ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
