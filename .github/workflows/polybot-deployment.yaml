@@ -18,18 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-
-      - name: Check if Secret is Configured
-        run: |
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-    
-
       - name: Checkout the repo code
         uses: actions/checkout@v2
 
       - name: Build and push image
         run: |
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
           cd polybot
           docker login -u ${{ secrets.DOCKER_REPO_USERNAME }} -p ${{ secrets.DOCKER_REPO_PASSWORD }}
           POLY_BOT_IMAGE_NAME=image_polybot_am_project:${{ github.run_number }}
