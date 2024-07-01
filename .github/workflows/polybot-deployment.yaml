@@ -48,6 +48,7 @@ jobs:
         for instance in $POLYBOT_INSTANCES; do
           INSTANCE_STATE=$(aws ec2 describe-instances --instance-ids $instance --query 'Reservations[0].Instances[0].State.Name' --output text --region ${{ secrets.AWS_REGION }})
           
+          
           if [ "$INSTANCE_STATE" != "running" ]; then
             echo "Instance $instance is $INSTANCE_STATE. Starting the instance..."
             aws ec2 start-instances --instance-ids $instance --region ${{ secrets.AWS_REGION }}
