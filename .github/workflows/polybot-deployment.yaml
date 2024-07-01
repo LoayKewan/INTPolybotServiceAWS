@@ -32,9 +32,11 @@ jobs:
       run: |
         cd polybot
         POLY_BOT_IMAGE_NAME=image_polybot_am_project:${{ github.run_number }}
+        
         docker build -t $POLY_BOT_IMAGE_NAME .
         docker tag $POLY_BOT_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
         docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+        echo $POLY_BOT_IMAGE_NAME
 
     - name: Set up SSH key
       run: |
@@ -76,7 +78,7 @@ jobs:
               echo "SSH connection successful to $PUBLIC_IP"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker stop my_polybot"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker system prune --force"
-              echo ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
+              echo $POLY_BOT_IMAGE_NAME
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker run --restart always --name my_polybot -p 8443:8443 ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME"
               break
