@@ -65,7 +65,6 @@ jobs:
             echo "No public IP found for instance $instance"
             continue
           fi
-        
           echo "Instance ID: $instance, Public IP: $PUBLIC_IP"
     
           # Retry SSH connection up to 5 times with a delay

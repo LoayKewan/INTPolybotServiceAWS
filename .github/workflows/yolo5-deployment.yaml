@@ -37,6 +37,7 @@ jobs:
         docker build -t $YOLO5_IMAGE_NAME .
         docker tag YOLO5_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME
         docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME
+        
 
     - name: Get EC2 instance ID
       run: |
