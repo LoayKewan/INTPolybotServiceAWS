@@ -69,7 +69,6 @@ jobs:
             continue
           fi
           echo "Instance ID: $instance, Public IP: $PUBLIC_IP"
-    
           # Retry SSH connection up to 5 times with a delay
           for attempt in {1..5}; do
             echo "Attempt $attempt to connect to $PUBLIC_IP"
