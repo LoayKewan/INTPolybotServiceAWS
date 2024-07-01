@@ -76,7 +76,7 @@ jobs:
             if ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "echo 'SSH connection successful'"; then
               echo "SSH connection successful to $PUBLIC_IP"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker stop my_polybot || true"
-              ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker rm my_polybot || true"
+              ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "docker system prune --force || true"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker run --restart always --name my_polybot -p 8443:8443 ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME"
               break
