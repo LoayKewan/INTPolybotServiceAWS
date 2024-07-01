@@ -35,7 +35,7 @@ jobs:
         cd yolo5
         YOLO5_IMAGE_NAME=image_yolo5_am_project:${{ github.run_number }}
         docker build -t $YOLO5_IMAGE_NAME .
-        docker tag YOLO5_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME
+        docker tag $YOLO5_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME
         docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME
         
 
