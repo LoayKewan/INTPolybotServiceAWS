@@ -38,7 +38,7 @@ jobs:
         docker build -t $POLY_BOT_IMAGE_NAME .
         docker tag $POLY_BOT_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
         docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
-        echo $POLY_BOT_IMAGE_NAME
+        
 
     - name: Set up SSH key
       run: |
@@ -47,6 +47,8 @@ jobs:
 
     - name: Deploy to AWS EC2
       run: |  
+        POLY_BOT_IMAGE_NAME=image_polybot_am_project:${{ github.run_number }}
+        
         echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
         chmod 400 private_key.pem
         POLYBOT_INSTANCES=$(aws elbv2 describe-target-health --target-group-arn ${{ secrets.POLYBOT_TARGET_GROUP_ARN }} --query 'TargetHealthDescriptions[*].Target.Id' --output text --region ${{ secrets.AWS_REGION }})
@@ -78,11 +80,10 @@ jobs:
             echo "Attempt $attempt to connect to $PUBLIC_IP"
             if ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "echo 'SSH connection successful'"; then
               echo "SSH connection successful to $PUBLIC_IP"
-              echo "$POLY_BOT_IMAGE_NAME loaykewan is tired "
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker stop my_polybot"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker rm my_polybot"
               
-              #ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME"
+              ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP " sudo docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME"
               ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$PUBLIC_IP "sudo docker run --restart always --name my_polybot -p 8443:8443 ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME"
               break
             else
