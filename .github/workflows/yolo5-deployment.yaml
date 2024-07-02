@@ -2,6 +2,8 @@ name: Yolo5 Deployment
 
 on:
   push:
+    paths:
+      - 'yolo5/**'
     branches:
       - main
 
@@ -39,28 +41,30 @@ jobs:
         docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME
         
 
-    - name: Get EC2 instance ID
-      run: |
-        INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances --query "AutoScalingInstances[0].InstanceId" --output text)
-        echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+    
 
     - name: Get EC2 public IP
       id: get_public_ip
       run: |
+        INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances --query "AutoScalingInstances[0].InstanceId" --output text)
+        echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
         EC2_PUBLIC_IP=$(aws ec2 describe-instances --instance-ids ${{ env.INSTANCE_ID }} --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
 #        echo "EC2_PUBLIC_IP_ASG=$EC2_PUBLIC_IP_ASG" >> $GITHUB_ENV
 
     - name: Deploy to AWS EC2
-      run: |      
+      run: |  
+        YOLO5_IMAGE_NAME=image_yolo5_am_project:${{ github.run_number }}
+        echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+        chmod 400 private_key.pem
         # Retry SSH connection up to 5 times with a delay
         for attempt in {1..5}; do
           echo "Attempt $attempt to connect to ${{ env.EC2_PUBLIC_IP }}"
-          if ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} ubuntu@$EC2_PUBLIC_IP "echo 'SSH connection successful'"; then
+          if ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$EC2_PUBLIC_IP "echo 'SSH connection successful'"; then
             echo "SSH connection successful to $EC2_PUBLIC_IP"
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} ubuntu@$EC2_PUBLIC_IP "sudo docker stop my_yolo5_test || true"
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} ubuntu@$EC2_PUBLIC_IP "sudo docker rm yolo5* || true"
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} ubuntu@$EC2_PUBLIC_IP "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/yolo5:latest"
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} ubuntu@$EC2_PUBLIC_IP "sudo docker run -d --name my_yolo5_test ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME"
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$EC2_PUBLIC_IP "sudo docker stop my_yolo5_test || true"
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$EC2_PUBLIC_IP "sudo docker rm my_yolo5_test || true"
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$EC2_PUBLIC_IP "sudo docker pull ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME"
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$EC2_PUBLIC_IP "sudo docker run -d --name my_yolo5_test ${{ secrets.DOCKER_REPO_USERNAME }}/$YOLO5_IMAGE_NAME"
             break
           else
             echo "SSH connection to ubuntu@$EC2_PUBLIC_IP failed. Retrying in 10 seconds..."
