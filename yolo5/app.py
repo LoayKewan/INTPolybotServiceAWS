@@ -23,7 +23,7 @@ def consume():
         response = sqs_client.receive_message(QueueUrl=queue_name, MaxNumberOfMessages=1, WaitTimeSeconds=5)
 
         logger.info(f'response is {response}')
-        logger.info('loay ****************')
+        logger.info('loay **********---******')
 
         if 'Messages' in response:
             message = response['Messages'][0]['Body']
