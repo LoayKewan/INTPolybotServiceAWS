@@ -55,6 +55,7 @@ jobs:
         # Retry SSH connection up to 5 times with a delay
         for attempt in {1..5}; do
           echo "Attempt $attempt to connect to $EC2_PUBLIC_IP "
+        
           if ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$EC2_PUBLIC_IP "echo 'SSH connection successful'"; then
             echo "SSH connection successful to $EC2_PUBLIC_IP"
             ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@$EC2_PUBLIC_IP "sudo docker stop my_yolo5_test || true"
