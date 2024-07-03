@@ -38,7 +38,6 @@ jobs:
         docker build -t $POLY_BOT_IMAGE_NAME .
         docker tag $POLY_BOT_IMAGE_NAME ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
         docker push ${{ secrets.DOCKER_REPO_USERNAME }}/$POLY_BOT_IMAGE_NAME
-        
 
     - name: Set up SSH key
       run: |
