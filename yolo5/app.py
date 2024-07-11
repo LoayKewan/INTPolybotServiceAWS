@@ -16,7 +16,6 @@ sqs_client = boto3.client('sqs', region_name='eu-west-1')
 
 with open("data/coco128.yaml", "r") as stream:
     names = yaml.safe_load(stream)['names']
-
 current_time = time.time()
 def consume():
     while True:
